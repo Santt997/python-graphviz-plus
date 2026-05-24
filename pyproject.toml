@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "python-graphviz-plus"
+version = "0.1.0"
+description = "Graph and network visualization utilities extending graphviz and networkx"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "graphviz",
+    "networkx",
+    "pandas"
+]
+
+[tool.setuptools]
+packages = ["graph"]
