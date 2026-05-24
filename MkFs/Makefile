@@ -4,7 +4,7 @@ ENV_FILE=../YMLs/python-graph-viz.yml
 .PHONY: env build check upload clean
 
 create:
-	micromamba env create -f $(ENV_FILE) -n $(ENV_NAME)
+	micromamba env create -f $(ENV_FILE) -n $(ENV_NAME) -y
 
 build:
 	python -m build
