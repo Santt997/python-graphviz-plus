@@ -6,10 +6,10 @@ import graphviz
 graphviz.__version__
 
 class BlackNeatoGraph(Graph):
-    def __init__(self, ll: list[tuple[str, str]], lp: list[tuple[str, str]] = [], name : str='G'):
+    def __init__(self, ll: list[tuple[str, str] | tuple[str, str, dict[str, str]]], lp: list[tuple[str, str]] = [], name : str='G'):
         super().__init__(name, engine='neato')
         self.attr(overlap='false', outputorder='edgesfirst')
-        self.attr('node', shape='circle', fixedsize='true', width='0.21', height='0.21', fontsize='12', color='white', fontcolor='white')
+        self.attr('node', shape='circle', fixedsize='true', width='.21', height='.21', fontsize='12', color='white', fontcolor='white')
         self.attr(bgcolor='black')
         self.attr('edge', color='white', penwidth='1.5')
         self.ll = ll
@@ -57,7 +57,7 @@ class BlackNeatoGraph(Graph):
         return max(grados) if grados else 0
 
     def get_valency_min(self) -> int:
-        """Retorna el grado (valencia) mínimo presente en el grafo."""
+        '''Retorna el grado (valencia) mínimo presente in el graph.'''
         # 1. Limpiamos las aristas para NetworkX
         clean_edges = [(i[0], i[1]) for i in self.ll]
         graph = nx.Graph(clean_edges)
