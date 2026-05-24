@@ -1,0 +1,10 @@
+name: python-graphviz-plus
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - build
+  - twine
+  - pip:
+      - graphviz
