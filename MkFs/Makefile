@@ -7,13 +7,13 @@ create:
 	micromamba env create -f $(ENV_FILE) -n $(ENV_NAME) -y
 
 build: clean
-	python -m build
+	micromamba run -n $(ENV_NAME) python -m build
 
 check:
-	python -m twine check dist/*
+	micromamba run -n $(ENV_NAME) python -m twine check dist/*
 
 upload:
-	python -m twine upload dist/*
+	micromamba run -n $(ENV_NAME) python -m twine upload dist/*
 
 release: build check upload
 
