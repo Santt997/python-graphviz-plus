@@ -2,6 +2,10 @@
 
 A set of graph and network visualization utilities that extend `graphviz`, `networkx`, and `pandas`. Highly optimized for generating clean, elegant, and styled graphs in both Jupyter Notebooks and standard Python scripts.
 
+## Github
+
+https://github.com/Santt997/python-graphviz-plus
+
 ## Key Features
 
 - **`AdjacencyList`**: Parse edge lists (traditional `ll` representation) or dictionaries of neighbor tuples. Easily convert these structures into Pandas DataFrames for quick inspection and tabular formatting.
