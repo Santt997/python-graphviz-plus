@@ -73,3 +73,18 @@ class BlackNeatoGraph(Graph):
         
         grados = [grado for nodo, grado in graph.degree()]
         return len(set(grados)) == 1 if grados else True  # Si no hay nodos, consideramos que es regular
+    
+    def is_planar(self) -> bool:
+        '''Retorna True si el grafo es planar o False si no lo es.'''
+        # 1. Limpiamos las aristas para NetworkX (tomando solo los dos primeros elementos)
+        clean_edges = [(i[0], i[1]) for i in self.ll]
+        
+        # 2. Creamos el objeto Grafo de NetworkX
+        graph = nx.Graph(clean_edges)
+        
+        # 3. Usamos la función nativa de NetworkX para verificar planaridad
+        # check_planarity devuelve una tupla: (bool, PlanarEmbedding)
+        # Solo nos interesa el primer valor (el booleano)
+        es_planar, _ = nx.check_planarity(graph)
+        
+        return es_planar
