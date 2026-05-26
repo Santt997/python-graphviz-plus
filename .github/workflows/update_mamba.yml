@@ -27,3 +27,7 @@ jobs:
           # 3. Instalación editable local
           # Esto actualiza el paquete enlazando directamente el código fuente actual
           pip install -e .
+
+          # 3. Actualizar el entorno secundario disc-1v1
+          micromamba activate disc-1v1
+          pip install -e .
