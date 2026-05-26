@@ -3,7 +3,8 @@ name: Actualizar Entorno Micromamba Local
 on:
   push:
     branches:
-      - main  # Cambia a 'master' si esa es tu rama principal
+      - main        # Ejecuta en tu terminal: 'git branch --show-current' para saber tu rama
+
 
 jobs:
   update-env:
