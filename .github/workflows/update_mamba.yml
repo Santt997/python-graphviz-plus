@@ -1,0 +1,29 @@
+name: Actualizar Entorno Micromamba Local
+
+on:
+  push:
+    branches:
+      - main  # Cambia a 'master' si esa es tu rama principal
+
+jobs:
+  update-env:
+    runs-on: self-hosted  # Obliga a ejecutarlo en tu Debian local
+
+    steps:
+      - name: Descargar cambios del repositorio
+        uses: actions/checkout@v4
+
+      - name: Actualizar paquete en Micromamba local
+        run: |
+          # 1. Cargar el entorno de Micromamba en la sesión de Bash de GitHub Actions
+          # En Debian, la ruta por defecto del binario suele ser ~/.local/bin/micromamba
+          # o estar ya expuesta en el sistema si lo agregaste al PATH.
+          export MAMBA_EXE="$HOME/.local/bin/micromamba"
+          eval "$($MAMBA_EXE shell hook --shell bash)"
+          
+          # 2. Activar tu entorno específico
+          micromamba activate python-graphviz-plus
+          
+          # 3. Instalación editable local
+          # Esto actualiza el paquete enlazando directamente el código fuente actual
+          pip install -e .
