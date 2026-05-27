@@ -28,20 +28,45 @@ class BlackNeatoGraph(Graph):
             self.edge(i[0], i[1], **({} if len(i) == 2 else i[2]))
     
     @classmethod
-    def from_dict_of_str_and_tuples_str(cls, 
-                            data_dict: dict[str, tuple[str, ...]], 
-                            lp: list[tuple[str, str]] = [], 
-                            name: str = 'G'):
-        '''Constructor extra: genera el grafo directly from 1 dict[tuple].'''
-        edges_list: list[tuple[str, str] | tuple[str, str, dict[str, str]]] = []
+    def from_dict_of_str_and_tuples_str(
+        cls, 
+        data_dict: dict[str, tuple[str, ...]], 
+        lp: list[tuple[str, str]] = [], 
+        name: str = 'G',
+        engine: str = 'sfdp'
+    ):
+        '''Constructor extra: genera el grafo directamente desde un dict[tuple] 
+        calculando posiciones sin cruces si el grafo es planar.'''
+        edges_list: list[tuple[str, str]] = []
         
+        # 1. Construimos la lista de aristas evitando duplicados
         for nodo_origen, vecinos in data_dict.items():
             for nodo_destino in vecinos:
-                # Evita duplicar aristas simples en el grafo no dirigido
-                if (nodo_destino, nodo_origen) not in [(e[0], e[1]) for e in edges_list]:
+                ya_existe = any(
+                    (e[0] == nodo_origen and e[1] == nodo_destino) or 
+                    (e[0] == nodo_destino and e[1] == nodo_origen) 
+                    for e in edges_list
+                )
+                if not ya_existe:
                     edges_list.append((nodo_origen, nodo_destino))
                     
-        return cls(ll=edges_list, lp=lp, name=name)
+        # 2. Si el usuario no envió posiciones fijas, calculamos el embedding planar
+        if not lp:
+            graph = nx.Graph(edges_list)
+            es_planar, embedding = nx.check_planarity(graph)
+            
+            if es_planar and embedding is not None:
+                # Calcula las coordenadas (x, y) perfectas sin colisiones de aristas
+                posiciones_calculadas = nx.combinatorial_embedding_to_pos(embedding)
+                
+                # Convertimos al formato "x,y!" que Graphviz entiende como posición fija
+                lp = [
+                    (str(nodo), f"{coords[0]*2.5},{coords[1]*2.5}!") 
+                    for nodo, coords in posiciones_calculadas.items()
+                ]
+                    
+        return cls(ll=edges_list, lp=lp, name=name, engine=engine)
+
     
     @classmethod
     def from_dict_of_int_and_tuples_ints(cls, 
