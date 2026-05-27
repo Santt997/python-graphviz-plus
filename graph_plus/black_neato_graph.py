@@ -67,32 +67,45 @@ class BlackNeatoGraph(Graph):
 
     
     @classmethod
-    def from_dict_of_int_and_tuples_int(cls, 
-                          data_dict: dict[int, tuple[int, ...]], 
-                          lp: list[tuple[str, str]] = [], 
-                          name: str = 'G'):
-        '''Constructor extra: genera el grafo desde un dict de enteros.'''
+    def from_dict_of_int_and_tuples_int(
+        cls, 
+        data_dict: dict[int, tuple[int, ...]], 
+        lp: list[tuple[str, str]] = [], 
+        name: str = 'G',
+        engine: str = 'neato'  # <-- También por defecto 'neato'
+    ):
+        '''Constructor extra: genera el grafo desde un dict de enteros
+        garantizando cero cruces si el grafo es planar.'''
         edges_list: list[tuple[str, str]] = []
         
         for nodo_origen, vecinos in data_dict.items():
-            # Convertimos el origen a texto
             origen_str = str(nodo_origen)
-            
             for nodo_destino in vecinos:
-                # Convertimos el destino a texto
                 destino_str = str(nodo_destino)
                 
-                # Evitamos duplicar aristas en el grafo no dirigido
                 ya_existe = any(
                     (e[0] == origen_str and e[1] == destino_str) or 
                     (e[0] == destino_str and e[1] == origen_str) 
                     for e in edges_list
                 )
-                
                 if not ya_existe:
                     edges_list.append((origen_str, destino_str))
                     
-        return cls(ll=edges_list, lp=lp, name=name)
+        if not lp:
+            graph = nx.Graph(edges_list)
+            es_planar, embedding = nx.check_planarity(graph)
+            
+            if es_planar and embedding is not None:
+                posiciones_calculadas = nx.combinatorial_embedding_to_pos(
+                    embedding, 
+                    fully_triangulate=True
+                )
+                lp = [
+                    (str(nodo), f"{coords[0]*3.5},{coords[1]*3.5}!") 
+                    for nodo, coords in posiciones_calculadas.items()
+                ]
+                    
+        return cls(ll=edges_list, lp=lp, name=name, engine=engine)
 
     # Getters & Setters
     def list_of_adyacency(self) -> pd.DataFrame:
