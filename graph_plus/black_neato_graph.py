@@ -67,7 +67,7 @@ class BlackNeatoGraph(Graph):
 
     
     @classmethod
-    def from_dict_of_int_and_tuples_ints(cls, 
+    def from_dict_of_int_and_tuples_int(cls, 
                           data_dict: dict[int, tuple[int, ...]], 
                           lp: list[tuple[str, str]] = [], 
                           name: str = 'G'):
