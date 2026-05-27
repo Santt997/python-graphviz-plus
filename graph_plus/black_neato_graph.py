@@ -11,7 +11,7 @@ class BlackNeatoGraph(Graph):
         name : str,
         ll: list[tuple[str, str] | tuple[str, str, dict[str, str]]],
         lp: list[tuple[str, str]] = [],
-        engine: str = 'sfdp',
+        engine: str = 'neato',
     ):
         super().__init__(name, engine=engine)
         self.attr(overlap='false', outputorder='edgesfirst')
@@ -33,13 +33,12 @@ class BlackNeatoGraph(Graph):
         data_dict: dict[str, tuple[str, ...]], 
         lp: list[tuple[str, str]] = [], 
         name: str = 'G',
-        engine: str = 'sfdp'
+        engine: str = 'neato'  # <-- También por defecto 'neato'
     ):
         '''Constructor extra: genera el grafo directamente desde un dict[tuple] 
-        calculando posiciones sin cruces si el grafo es planar.'''
+        de strings garantizando cero cruces si el grafo es planar.'''
         edges_list: list[tuple[str, str]] = []
         
-        # 1. Construimos la lista de aristas evitando duplicados
         for nodo_origen, vecinos in data_dict.items():
             for nodo_destino in vecinos:
                 ya_existe = any(
@@ -50,18 +49,17 @@ class BlackNeatoGraph(Graph):
                 if not ya_existe:
                     edges_list.append((nodo_origen, nodo_destino))
                     
-        # 2. Si el usuario no envió posiciones fijas, calculamos el embedding planar
         if not lp:
             graph = nx.Graph(edges_list)
             es_planar, embedding = nx.check_planarity(graph)
             
             if es_planar and embedding is not None:
-                # Calcula las coordenadas (x, y) perfectas sin colisiones de aristas
-                posiciones_calculadas = nx.combinatorial_embedding_to_pos(embedding)
-                
-                # Convertimos al formato "x,y!" que Graphviz entiende como posición fija
+                posiciones_calculadas = nx.combinatorial_embedding_to_pos(
+                    embedding, 
+                    fully_triangulate=True
+                )
                 lp = [
-                    (str(nodo), f"{coords[0]*2.5},{coords[1]*2.5}!") 
+                    (str(nodo), f"{coords[0]*3.5},{coords[1]*3.5}!") 
                     for nodo, coords in posiciones_calculadas.items()
                 ]
                     
