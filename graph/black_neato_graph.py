@@ -21,7 +21,7 @@ class BlackNeatoGraph(Graph):
             self.edge(i[0], i[1], **({} if len(i) == 2 else i[2]))
     
     @classmethod
-    def from_dict_of_tuples(cls, 
+    def from_dict_of_str_and_tuples_str(cls, 
                             data_dict: dict[str, tuple[str, ...]], 
                             lp: list[tuple[str, str]] = [], 
                             name: str = 'G'):
@@ -33,6 +33,34 @@ class BlackNeatoGraph(Graph):
                 # Evita duplicar aristas simples en el grafo no dirigido
                 if (nodo_destino, nodo_origen) not in [(e[0], e[1]) for e in edges_list]:
                     edges_list.append((nodo_origen, nodo_destino))
+                    
+        return cls(ll=edges_list, lp=lp, name=name)
+    
+    @classmethod
+    def from_dict_of_int_and_tuples_ints(cls, 
+                          data_dict: dict[int, tuple[int, ...]], 
+                          lp: list[tuple[str, str]] = [], 
+                          name: str = 'G'):
+        '''Constructor extra: genera el grafo desde un dict de enteros.'''
+        edges_list: list[tuple[str, str]] = []
+        
+        for nodo_origen, vecinos in data_dict.items():
+            # Convertimos el origen a texto
+            origen_str = str(nodo_origen)
+            
+            for nodo_destino in vecinos:
+                # Convertimos el destino a texto
+                destino_str = str(nodo_destino)
+                
+                # Evitamos duplicar aristas en el grafo no dirigido
+                ya_existe = any(
+                    (e[0] == origen_str and e[1] == destino_str) or 
+                    (e[0] == destino_str and e[1] == origen_str) 
+                    for e in edges_list
+                )
+                
+                if not ya_existe:
+                    edges_list.append((origen_str, destino_str))
                     
         return cls(ll=edges_list, lp=lp, name=name)
 
