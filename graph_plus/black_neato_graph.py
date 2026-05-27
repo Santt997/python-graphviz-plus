@@ -12,6 +12,7 @@ class BlackNeatoGraph(Graph):
         self.attr('node', shape='circle', fixedsize='true', width='.21', height='.21', fontsize='12', color='white', fontcolor='white')
         self.attr(bgcolor='black')
         self.attr('edge', color='white', penwidth='1.5')
+        self.attr(start='eigen') 
         self.ll = ll
 
         for i in lp:
