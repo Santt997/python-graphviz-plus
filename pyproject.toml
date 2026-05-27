@@ -15,4 +15,4 @@ dependencies = [
 ]
 
 [tool.setuptools]
-packages = ["graph"]
+packages = ["graph_plus"]
