@@ -6,8 +6,14 @@ import graphviz
 graphviz.__version__
 
 class BlackNeatoGraph(Graph):
-    def __init__(self, name : str, ll: list[tuple[str, str] | tuple[str, str, dict[str, str]]], lp: list[tuple[str, str]] = []):
-        super().__init__(name, engine='sfdp')
+    def __init__(
+        self,
+        name : str,
+        ll: list[tuple[str, str] | tuple[str, str, dict[str, str]]],
+        lp: list[tuple[str, str]] = [],
+        engine: str = 'sfdp',
+    ):
+        super().__init__(name, engine=engine)
         self.attr(overlap='false', outputorder='edgesfirst')
         self.attr('node', shape='circle', fixedsize='true', width='.21', height='.21', fontsize='12', color='white', fontcolor='white')
         self.attr(bgcolor='black')
