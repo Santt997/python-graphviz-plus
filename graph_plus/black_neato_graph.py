@@ -35,8 +35,8 @@ class BlackNeatoGraph(Graph):
         name: str = 'G',
         engine: str = 'neato'  # <-- También por defecto 'neato'
     ):
-        '''Constructor extra: genera el grafo directamente desde un dict[tuple] 
-        de strings garantizando cero cruces si el grafo es planar.'''
+        '''Constructor extra: genera el graph directly from 1 dict[tuple[str, ...]]
+          garantizando 0 cruces si el graph is planar.'''
         edges_list: list[tuple[str, str]] = []
         
         for nodo_origen, vecinos in data_dict.items():
@@ -72,10 +72,10 @@ class BlackNeatoGraph(Graph):
         data_dict: dict[int, tuple[int, ...]], 
         lp: list[tuple[str, str]] = [], 
         name: str = 'G',
-        engine: str = 'neato'  # <-- También por defecto 'neato'
+        engine: str = 'neato'  # <-- Also by default 'neato'
     ):
-        '''Constructor extra: genera el grafo desde un dict de enteros
-        garantizando cero cruces si el grafo es planar.'''
+        '''Constructor extra: genera the graph from 1 dict[int]
+        garantizando 0 cruces if the graph is planar.'''
         edges_list: list[tuple[str, str]] = []
         
         for nodo_origen, vecinos in data_dict.items():
@@ -109,7 +109,7 @@ class BlackNeatoGraph(Graph):
 
     # Getters & Setters
     def list_of_adyacency(self) -> pd.DataFrame:
-        # 1. Creamos the DataFrame from the dict of form secure
+        # 1. dict2df of secureForm
         # 2. w .T lo damos vuelta 4q the keys pasen a be cols
         print('List of adyacency')
         df : pd.DataFrame = pd.DataFrame.from_dict(nx.to_dict_of_lists(nx.Graph(self.ll)), orient='index').T
@@ -118,44 +118,44 @@ class BlackNeatoGraph(Graph):
         return df.reindex(columns=sorted(df.columns)).fillna('-')
     
     def get_valency_max(self) -> int:
-        '''Retorna the grade (valency) max present in the graph.'''
-        # 1. Limpiamos las aristas para NetworkX (tomando solo los dos primeros elementos)
+        '''-> the grade (valency) max present in the graph.'''
+        # 1. Clean the edges 4etworkX (taking only the 2 first elems)
         clean_edges = [(i[0], i[1]) for i in self.ll]
         graph = nx.Graph(clean_edges)
         
-        # 2. graph.degree devuelve tuplas (nodo, grado). Buscamos el valor máximo.
+        # 2. graph.degree -> tuples (node, degree). Search the val máx.
         grados = [grado for nodo, grado in graph.degree()]
         return max(grados) if grados else 0
 
     def get_valency_min(self) -> int:
-        '''Retorna el grado (valencia) mínimo presente in el graph.'''
-        # 1. Limpiamos las aristas para NetworkX
+        '''-> degree (valencia) min present in the graph.'''
+        # 1. Clean the edges 4NetworkX
         clean_edges = [(i[0], i[1]) for i in self.ll]
         graph = nx.Graph(clean_edges)
         
-        # 2. Buscamos el valor mínimo entre todos los grados calculados
+        # 2. Search the val min btwn all the calculated degrees
         grados = [grado for nodo, grado in graph.degree()]
         return min(grados) if grados else 0
     
     def is_regular(self) -> bool:
-        '''Determina si el grafo es regular (todos los nodos tienen el mismo grado).'''
+        '''Determ if the graph is regular (all the nodes have the same degree).'''
         clean_edges = [(i[0], i[1]) for i in self.ll]
         graph = nx.Graph(clean_edges)
         
         grados = [grado for nodo, grado in graph.degree()]
-        return len(set(grados)) == 1 if grados else True  # Si no hay nodos, consideramos que es regular
+        return len(set(grados)) == 1 if grados else True  # If no hay nodes, considere q is regular
     
     def is_planar(self) -> bool:
-        '''Retorna True si el grafo es planar o False si no lo es.'''
-        # 1. Limpiamos las aristas para NetworkX (tomando solo los dos primeros elementos)
+        '''Retorna True if the graph is planar | False if no lo is.'''
+        # 1. Clean the edges 4NetworkX (taking only the 2 1º elems)
         clean_edges = [(i[0], i[1]) for i in self.ll]
         
-        # 2. Creamos el objeto Grafo de NetworkX
+        # 2. Create the object Graph of NetworkX
         graph = nx.Graph(clean_edges)
         
-        # 3. Usamos la función nativa de NetworkX para verificar planaridad
-        # check_planarity devuelve una tupla: (bool, PlanarEmbedding)
-        # Solo nos interesa el primer valor (el booleano)
+        # 3. Use the nativeFn of NetworkX 4verify planarity
+        # check_planarity -> tuple: (bool, PlanarEmbedding)
+        # Only nos interesa the 1º val (the bool)
         es_planar, _ = nx.check_planarity(graph)
         
         return es_planar
