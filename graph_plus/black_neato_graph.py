@@ -33,10 +33,10 @@ class BlackNeatoGraph(Graph):
         data_dict: dict[str, tuple[str, ...]], 
         lp: list[tuple[str, str]] = [], 
         name: str = 'G',
-        engine: str = 'neato'  # <-- También por defecto 'neato'
+        engine: str = 'neato'  # <-- Also by default 'neato'
     ):
-        '''Constructor extra: genera el graph directly from 1 dict[tuple[str, ...]]
-          garantizando 0 cruces si el graph is planar.'''
+        '''Constructor extra: genera the graph directly from 1 dict[tuple[str, ...]]
+          garantizando 0 cruces if the graph is planar.'''
         edges_list: list[tuple[str, str]] = []
         
         for nodo_origen, vecinos in data_dict.items():
