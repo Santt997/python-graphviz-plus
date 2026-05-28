@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# Exit immediately if a command exits with a non-zero status
+# Exit immediately if a cmd exits with a non-zero status
 set -e
 
-# Define colors for output
+# Define colors 4output
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
