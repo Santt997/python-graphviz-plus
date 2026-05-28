@@ -3,7 +3,7 @@
 # Exit immediately if a cmd exits with a non-zero status
 set -e
 
-# Define colors 4output
+# Define colors for output
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
@@ -17,16 +17,33 @@ echo -e "${BLUE}===============================================${NC}"
 # Navigate to the script's directory to ensure relative paths work
 cd "$(dirname "$0")"
 
-# 1. Check Python installation
-echo -e "\n${BLUE}[1/5] Checking Python environment...${NC}"
-PYTHON_BIN=$(which python3 || which python)
-if [ -z "$PYTHON_BIN" ]; then
-    echo -e "${RED}Error: Python is not installed or not in your PATH.${NC}"
-    exit 1
+# 1. Check Python installation (Targeting 'pypi' micromamba environment)
+echo -e "\n${BLUE}[1/5] Checking Micromamba 'pypi' environment...${NC}"
+
+# Check if the 'pypi' environment is already active in the current shell
+if [[ "$MAMBA_PREFIX" == *"/envs/pypi" ]]; then
+    PYTHON_BIN="$MAMBA_PREFIX/bin/python"
+else
+    # If not active, look for the binary in the standard micromamba location
+    # Supports default paths for Linux/macOS (~/micromamba or ~/.local/share/mamba)
+    MAMBA_PYPI_BIN="$HOME/micromamba/envs/pypi/bin/python"
+    if [ ! -f "$MAMBA_PYPI_BIN" ]; then
+        MAMBA_PYPI_BIN="$HOME/.local/share/mamba/envs/pypi/bin/python"
+    fi
+    
+    if [ -f "$MAMBA_PYPI_BIN" ]; then
+        PYTHON_BIN="$MAMBA_PYPI_BIN"
+    else
+        echo -e "${RED}Error: The micromamba environment 'pypi' does not exist.${NC}"
+        echo -e "${YELLOW}Please create it first by running:${NC}"
+        echo -e "  micromamba create -n pypi python=3.11 -y"
+        exit 1
+    fi
 fi
+
 echo -e "Using Python: ${GREEN}$($PYTHON_BIN --version) ($PYTHON_BIN)${NC}"
 
-# 2. Install/Upgrade packaging tools
+# 2. Install/Upgrade packaging tools inside the environment
 echo -e "\n${BLUE}[2/5] Installing/Upgrading build and twine...${NC}"
 $PYTHON_BIN -m pip install --upgrade pip
 $PYTHON_BIN -m pip install --upgrade build twine
@@ -70,11 +87,11 @@ case $option in
         $PYTHON_BIN -m twine upload --repository testpypi dist/*
         echo -e "${GREEN}Successfully uploaded to TestPyPI!${NC}"
         echo -e "You can try installing it using:"
-        echo -e "  ${YELLOW}pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ python-graphviz-plus${NC}"
+        echo -e "  ${YELLOW}pip install --index-url https://pypi.org --extra-index-url https://pypi.org python-graphviz-plus${NC}"
         ;;
     2)
         echo -e "\n${GREEN}Uploading to PyPI (Official Release)...${NC}"
-        $PYTHON_BIN -m twine upload dist/*
+        $PYTHON_BIN -m twine upload --verbose dist/*
         echo -e "${GREEN}Successfully published to PyPI!${NC}"
         echo -e "You and anyone else can now install it using:"
         echo -e "  ${YELLOW}pip install python-graphviz-plus${NC}"
