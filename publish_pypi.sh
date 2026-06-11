@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Exit immediately if a cmd exits with a non-zero status
+# Exit immediately if a cmd exits with a non-0 status
 set -e
 
 # Define colors for output
@@ -14,17 +14,17 @@ echo -e "${BLUE}===============================================${NC}"
 echo -e "${BLUE}    python-graphviz-plus PyPI Release Assistant${NC}"
 echo -e "${BLUE}===============================================${NC}"
 
-# Navigate to the script's directory to ensure relative paths work
+# Navigate 2the script's directory 2ensure relative paths work
 cd "$(dirname "$0")"
 
-# 1. Check Python installation (Targeting 'pypi' micromamba environment)
-echo -e "\n${BLUE}[1/5] Checking Micromamba 'pypi' environment...${NC}"
+# 1. Check Python installation (Targeting 'pypi' micromamba env)
+echo -e "\n${BLUE}[1/5] Checking Micromamba 'pypi' env...${NC}"
 
-# Check if the 'pypi' environment is already active in the current shell
+# Check if the 'pypi' env is already active in the currShell
 if [[ "$MAMBA_PREFIX" == *"/envs/pypi" ]]; then
     PYTHON_BIN="$MAMBA_PREFIX/bin/python"
 else
-    # If not active, look for the binary in the standard micromamba location
+    # If not active, look 4the binary in the standard micromamba location
     # Supports default paths for Linux/macOS (~/micromamba or ~/.local/share/mamba)
     MAMBA_PYPI_BIN="$HOME/micromamba/envs/pypi/bin/python"
     if [ ! -f "$MAMBA_PYPI_BIN" ]; then
@@ -34,7 +34,7 @@ else
     if [ -f "$MAMBA_PYPI_BIN" ]; then
         PYTHON_BIN="$MAMBA_PYPI_BIN"
     else
-        echo -e "${RED}Error: The micromamba environment 'pypi' does not exist.${NC}"
+        echo -e "${RED}Error: The micromamba env 'pypi' does not exist.${NC}"
         echo -e "${YELLOW}Please create it first by running:${NC}"
         echo -e "  micromamba create -n pypi python=3.11 -y"
         exit 1
@@ -43,7 +43,7 @@ fi
 
 echo -e "Using Python: ${GREEN}$($PYTHON_BIN --version) ($PYTHON_BIN)${NC}"
 
-# 2. Install/Upgrade packaging tools inside the environment
+# 2. Install/Upgrade packaging tools inside the env
 echo -e "\n${BLUE}[2/5] Installing/Upgrading build and twine...${NC}"
 $PYTHON_BIN -m pip install --upgrade pip
 $PYTHON_BIN -m pip install --upgrade build twine
@@ -67,14 +67,14 @@ echo -e "${GREEN}Twine checks passed! Package is structurally valid.${NC}"
 
 # 6. Publish section
 echo -e "\n${YELLOW}===============================================${NC}"
-echo -e "${YELLOW}           Ready to Publish to PyPI!            ${NC}"
+echo -e "${YELLOW}           Ready 2Publish 2PyPI!            ${NC}"
 echo -e "${YELLOW}===============================================${NC}"
-echo -e "To upload, you will need your PyPI API Token."
+echo -e "2upload, you will need your PyPI API Token."
 echo -e "  - Username: ${GREEN}__token__${NC}"
-echo -e "  - Password: ${GREEN}pypi-your-api-token-value${NC}"
+echo -e "  - Password: ${GREEN}pypi-your-api-token-val${NC}"
 echo -e "==============================================="
 
-echo -e "\nWhere would you like to publish?"
+echo -e "\nWhere would you like 2publish?"
 echo -e "1) ${BLUE}TestPyPI${NC} (Safe test upload - requires account at test.pypi.org)"
 echo -e "2) ${GREEN}PyPI${NC} (Official release - requires account at pypi.org)"
 echo -e "3) ${YELLOW}Do not publish${NC} (Keep build files local)"
@@ -83,16 +83,16 @@ read -rp "Select an option [1-3]: " option
 
 case $option in
     1)
-        echo -e "\n${BLUE}Uploading to TestPyPI...${NC}"
+        echo -e "\n${BLUE}Uploading 2TestPyPI...${NC}"
         $PYTHON_BIN -m twine upload --repository testpypi dist/*
-        echo -e "${GREEN}Successfully uploaded to TestPyPI!${NC}"
+        echo -e "${GREEN}Successfully uploaded 2TestPyPI!${NC}"
         echo -e "You can try installing it using:"
         echo -e "  ${YELLOW}pip install --index-url https://pypi.org --extra-index-url https://pypi.org python-graphviz-plus${NC}"
         ;;
     2)
-        echo -e "\n${GREEN}Uploading to PyPI (Official Release)...${NC}"
+        echo -e "\n${GREEN}Uploading 2PyPI (Official Release)...${NC}"
         $PYTHON_BIN -m twine upload --verbose dist/*
-        echo -e "${GREEN}Successfully published to PyPI!${NC}"
+        echo -e "${GREEN}Successfully published 2PyPI!${NC}"
         echo -e "You and anyone else can now install it using:"
         echo -e "  ${YELLOW}pip install python-graphviz-plus${NC}"
         ;;
