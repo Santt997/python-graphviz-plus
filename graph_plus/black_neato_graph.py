@@ -36,7 +36,7 @@ class BlackNeatoGraph(Graph):
         engine: str = 'neato'  # <-- Also by default 'neato'
     ):
         '''Constructor extra: genera the graph directly from 1 dict[tuple[str, ...]]
-          garantizando 0 cruces if the graph is planar.'''
+          warrantying 0 cruces if the graph is planar.'''
         edges_list: list[tuple[str, str]] = []
         
         for nodo_origen, vecinos in data_dict.items():
@@ -75,7 +75,7 @@ class BlackNeatoGraph(Graph):
         engine: str = 'neato'  # <-- Also by default 'neato'
     ):
         '''Constructor extra: genera the graph from 1 dict[int]
-        garantizando 0 cruces if the graph is planar.'''
+        warrantying 0 cruces if the graph is planar.'''
         edges_list: list[tuple[str, str]] = []
         
         for nodo_origen, vecinos in data_dict.items():
@@ -118,12 +118,12 @@ class BlackNeatoGraph(Graph):
         return df.reindex(columns=sorted(df.columns)).fillna('-')
     
     def get_valency_max(self) -> int:
-        '''-> the grade (valency) max present in the graph.'''
+        '''-> the degree (valency) max present in the graph.'''
         # 1. Clean the edges 4etworkX (taking only the 2 first elems)
         clean_edges = [(i[0], i[1]) for i in self.ll]
         graph = nx.Graph(clean_edges)
         
-        # 2. graph.degree -> tuples (node, degree). Search the val máx.
+        # 2. graph.degree -> tuples (node, degree). Search the val max.
         grados = [grado for nodo, grado in graph.degree()]
         return max(grados) if grados else 0
 
@@ -133,22 +133,22 @@ class BlackNeatoGraph(Graph):
         clean_edges = [(i[0], i[1]) for i in self.ll]
         graph = nx.Graph(clean_edges)
         
-        # 2. Search the val min btwn all the calculated degrees
+        # 2. Search the val min btwn all the calc degrees
         grados = [grado for nodo, grado in graph.degree()]
         return min(grados) if grados else 0
     
     def is_regular(self) -> bool:
         '''Determ if the graph is regular (all the nodes have the same degree).'''
-        clean_edges = [(i[0], i[1]) for i in self.ll]
+        clean_edges : list[tuple[str, str] | tuple[str, str, dict[str, str]]] = [(i[0], i[1]) for i in self.ll]
         graph = nx.Graph(clean_edges)
         
-        grados = [grado for nodo, grado in graph.degree()]
-        return len(set(grados)) == 1 if grados else True  # If no hay nodes, considere q is regular
+        degrees : list[int] = [degree for node, degree in graph.degree()]
+        return len(set(degrees)) == 1 if degrees else True  # If no hay nodes, considere q is regular
     
     def is_planar(self) -> bool:
         '''Retorna True if the graph is planar | False if no lo is.'''
         # 1. Clean the edges 4NetworkX (taking only the 2 1º elems)
-        clean_edges = [(i[0], i[1]) for i in self.ll]
+        clean_edges : list[tuple[str, str] | tuple[str, str, dict[str, str]]] = [(i[0], i[1]) for i in self.ll]
         
         # 2. Create the object Graph of NetworkX
         graph = nx.Graph(clean_edges)
@@ -156,6 +156,6 @@ class BlackNeatoGraph(Graph):
         # 3. Use the nativeFn of NetworkX 4verify planarity
         # check_planarity -> tuple: (bool, PlanarEmbedding)
         # Only nos interesa the 1º val (the bool)
-        es_planar, _ = nx.check_planarity(graph)
+        es_planar : bool = nx.check_planarity(graph)[0]
         
         return es_planar
